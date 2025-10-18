@@ -65,24 +65,27 @@ class ClientControllerIntegrationTest extends IntegrationTestBase {
         // Arrange
         Person person = clientRepository.save(TestUtils.createTestPerson());
         Long clientId = person.getId();
-        
+
         String updatedName = "Updated Name";
         String updatedEmail = "updated@example.com";
-        
+        String updatedPhone = "+41123456789";
+
         String requestBody = String.format(
-            "{\"name\":\"%s\",\"email\":\"%s\"}", 
-            updatedName, 
-            updatedEmail
+                "{\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\"}",
+                updatedName,
+                updatedEmail,
+                updatedPhone
         );
 
         // Act & Assert
         mockMvc.perform(put("/api/clients/{id}", clientId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(clientId))
                 .andExpect(jsonPath("$.name").value(updatedName))
-                .andExpect(jsonPath("$.email").value(updatedEmail));
+                .andExpect(jsonPath("$.email").value(updatedEmail))
+                .andExpect(jsonPath("$.phone").value(updatedPhone));
     }
 
     @Test

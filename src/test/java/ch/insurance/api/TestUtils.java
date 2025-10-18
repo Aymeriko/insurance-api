@@ -31,12 +31,15 @@ public class TestUtils {
                 .build();
     }
 
-    public static Contract createTestContract(Long clientId) {
+    public static Contract createTestContract(Client client) {
+        LocalDateTime now = LocalDateTime.now();
         return Contract.builder()
-                .clientId(clientId)
+                .client(client)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusYears(1))
                 .costAmount(new BigDecimal("1500.50"))
+                .lastModifiedDate(now)
+                .createdAt(now)
                 .build();
     }
 

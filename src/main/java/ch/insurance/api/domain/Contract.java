@@ -14,9 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contracts", indexes = {
-    @Index(name = "idx_client_id", columnList = "client_id"),
-    @Index(name = "idx_end_date", columnList = "end_date"),
-    @Index(name = "idx_last_modified", columnList = "last_modified_date")
+    @Index(name = "idx_client_id", columnList = "client_id")
 })
 @Data
 @NoArgsConstructor
@@ -28,9 +26,9 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Client ID is required")
-    @Column(name = "client_id", nullable = false)
-    private Long clientId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
     @NotNull(message = "Start date is required")
     @Column(name = "start_date", nullable = false)

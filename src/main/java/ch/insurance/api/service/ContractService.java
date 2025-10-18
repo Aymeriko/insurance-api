@@ -1,5 +1,6 @@
 package ch.insurance.api.service;
 
+import ch.insurance.api.domain.Client;
 import ch.insurance.api.domain.Contract;
 import ch.insurance.api.dto.ContractCostUpdateRequest;
 import ch.insurance.api.dto.ContractRequest;
@@ -27,12 +28,11 @@ public class ContractService {
 
     @Transactional
     public ContractResponse createContract(Long clientId, ContractRequest request) {
-        if (!clientRepository.existsById(clientId)) {
-            throw new ResourceNotFoundException("Client", clientId);
-        }
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
 
         Contract contract = Contract.builder()
-                .clientId(clientId)
+                .client(client)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .costAmount(request.getCostAmount())
@@ -96,11 +96,18 @@ public class ContractService {
                 .activeContractsCount(activeCount)
                 .build();
     }
+    
+    @Transactional(readOnly = true)
+    public ContractResponse getContract(Long contractId) {
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new ResourceNotFoundException("Contract", contractId));
+        return mapToResponse(contract);
+    }
 
     private ContractResponse mapToResponse(Contract contract) {
         return ContractResponse.builder()
                 .id(contract.getId())
-                .clientId(contract.getClientId())
+                .clientId(contract.getClient() != null ? contract.getClient().getId() : null)
                 .startDate(contract.getStartDate())
                 .endDate(contract.getEndDate())
                 .costAmount(contract.getCostAmount())

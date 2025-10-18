@@ -22,20 +22,26 @@ public class ContractController {
 
     private final ContractService contractService;
 
+    @GetMapping("/contracts/{contractId}")
+    public ResponseEntity<ContractResponse> getContract(@PathVariable Long contractId) {
+        ContractResponse response = contractService.getContract(contractId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/contracts/{contractId}/cost")
+    public ResponseEntity<ContractResponse> updateContractCost(
+            @PathVariable Long contractId,
+            @Valid @RequestBody ContractCostUpdateRequest request) {
+        ContractResponse response = contractService.updateContractCost(contractId, request);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/clients/{clientId}/contracts")
     public ResponseEntity<ContractResponse> createContract(
             @PathVariable Long clientId,
             @Valid @RequestBody ContractRequest request) {
         ContractResponse response = contractService.createContract(clientId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PatchMapping("/contracts/{contractId}/cost")
-    public ResponseEntity<ContractResponse> updateContractCost(
-            @PathVariable Long contractId,
-            @Valid @RequestBody ContractCostUpdateRequest request) {
-        ContractResponse response = contractService.updateContractCost(contractId, request);
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/clients/{clientId}/contracts")
@@ -53,4 +59,7 @@ public class ContractController {
         TotalCostResponse response = contractService.getTotalCost(clientId);
         return ResponseEntity.ok(response);
     }
+    
+
+
 }

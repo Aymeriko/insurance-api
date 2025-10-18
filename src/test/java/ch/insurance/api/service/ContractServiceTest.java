@@ -1,6 +1,7 @@
 package ch.insurance.api.service;
 
 import ch.insurance.api.TestUtils;
+import ch.insurance.api.domain.Client;
 import ch.insurance.api.domain.Contract;
 import ch.insurance.api.dto.ContractCostUpdateRequest;
 import ch.insurance.api.dto.ContractRequest;
@@ -18,8 +19,8 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,10 +47,12 @@ class ContractServiceTest {
         // Arrange
         Long clientId = 1L;
         ContractRequest request = TestUtils.createContractRequest();
-        Contract contract = TestUtils.createTestContract(clientId);
+        Client client = TestUtils.createTestPerson();
+        client.setId(clientId);
+        Contract contract = TestUtils.createTestContract(client);
         contract.setId(1L);
 
-        when(clientRepository.existsById(clientId)).thenReturn(true);
+        when(clientRepository.findById(clientId)).thenReturn(java.util.Optional.of(client));
         when(contractRepository.save(any(Contract.class))).thenReturn(contract);
 
         // Act
@@ -68,11 +71,14 @@ class ContractServiceTest {
     void updateContractCost_ShouldUpdateCostAndReturnUpdatedContract() {
         // Arrange
         Long contractId = 1L;
+        Long clientId = 1L;
         ContractCostUpdateRequest updateRequest = TestUtils.createCostUpdateRequest();
-        Contract existingContract = TestUtils.createTestContract(1L);
+        Client client = TestUtils.createTestPerson();
+        client.setId(clientId);
+        Contract existingContract = TestUtils.createTestContract(client);
         existingContract.setId(contractId);
 
-        when(contractRepository.findById(contractId)).thenReturn(java.util.Optional.of(existingContract));
+        when(contractRepository.findById(contractId)).thenReturn(Optional.of(existingContract));
         when(contractRepository.save(any(Contract.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -89,14 +95,16 @@ class ContractServiceTest {
         // Arrange
         Long clientId = 1L;
         LocalDateTime modifiedAfter = LocalDateTime.now().minusDays(1);
-        Contract activeContract = TestUtils.createTestContract(clientId);
+        Client client = TestUtils.createTestPerson();
+        client.setId(clientId);
+        Contract activeContract = TestUtils.createTestContract(client);
         activeContract.setId(1L);
         activeContract.setLastModifiedDate(LocalDateTime.now());
 
         when(clientRepository.existsById(clientId)).thenReturn(true);
         when(contractRepository.findActiveContractsByClientIdAndModifiedAfter(
                 eq(clientId), any(LocalDate.class), eq(modifiedAfter)))
-                .thenReturn(Arrays.asList(activeContract));
+                .thenReturn(List.of(activeContract));
 
         // Act
         List<ContractResponse> responses = contractService.getActiveContracts(clientId, modifiedAfter);
@@ -104,7 +112,7 @@ class ContractServiceTest {
         // Assert
         assertFalse(responses.isEmpty());
         assertEquals(1, responses.size());
-        assertEquals(activeContract.getId(), responses.get(0).getId());
+        assertEquals(activeContract.getId(), responses.getFirst().getId());
     }
 
     @Test

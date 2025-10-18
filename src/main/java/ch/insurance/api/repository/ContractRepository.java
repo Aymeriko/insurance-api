@@ -14,20 +14,20 @@ import java.util.List;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    @Query("SELECT c FROM Contract c WHERE c.clientId = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
+    @Query("SELECT c FROM Contract c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
     List<Contract> findActiveContractsByClientId(@Param("clientId") Long clientId, @Param("currentDate") LocalDate currentDate);
 
-    @Query("SELECT c FROM Contract c WHERE c.clientId = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate) AND c.lastModifiedDate >= :modifiedAfter")
+    @Query("SELECT c FROM Contract c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate) AND c.lastModifiedDate >= :modifiedAfter")
     List<Contract> findActiveContractsByClientIdAndModifiedAfter(
         @Param("clientId") Long clientId,
         @Param("currentDate") LocalDate currentDate,
         @Param("modifiedAfter") LocalDateTime modifiedAfter
     );
 
-    @Query("SELECT COALESCE(SUM(c.costAmount), 0) FROM Contract c WHERE c.clientId = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
+    @Query("SELECT COALESCE(SUM(c.costAmount), 0) FROM Contract c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
     BigDecimal sumActiveContractsCostByClientId(@Param("clientId") Long clientId, @Param("currentDate") LocalDate currentDate);
 
-    @Query("SELECT COUNT(c) FROM Contract c WHERE c.clientId = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
+    @Query("SELECT COUNT(c) FROM Contract c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
     Long countActiveContractsByClientId(@Param("clientId") Long clientId, @Param("currentDate") LocalDate currentDate);
 
     List<Contract> findByClientId(Long clientId);

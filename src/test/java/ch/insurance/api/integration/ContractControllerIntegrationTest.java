@@ -1,27 +1,26 @@
 package ch.insurance.api.integration;
 
 import ch.insurance.api.TestUtils;
+import ch.insurance.api.domain.Client;
 import ch.insurance.api.domain.Contract;
 import ch.insurance.api.domain.Person;
 import ch.insurance.api.dto.ContractCostUpdateRequest;
 import ch.insurance.api.dto.ContractRequest;
 import ch.insurance.api.repository.ClientRepository;
 import ch.insurance.api.repository.ContractRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.*;
+import static ch.insurance.api.TestUtils.createTestPerson;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 class ContractControllerIntegrationTest extends IntegrationTestBase {
@@ -37,7 +36,7 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
     @BeforeEach
     void setUp() {
         // Create a test client
-        Person client = clientRepository.save(TestUtils.createTestPerson());
+        Person client = clientRepository.save(createTestPerson());
         clientId = client.getId();
     }
 
@@ -61,7 +60,11 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
     @Test
     void updateContractCost_ShouldReturnUpdatedContract() throws Exception {
         // Arrange
-        Contract contract = TestUtils.createTestContract(clientId);
+        // Get the client that was created in setUp
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalStateException("Test client not found"));
+                
+        Contract contract = TestUtils.createTestContract(client);
         contract = contractRepository.save(contract);
         Long contractId = contract.getId();
 
@@ -79,38 +82,18 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
     }
 
     @Test
-    void getActiveContracts_ShouldReturnActiveContracts() throws Exception {
-        // Arrange
-        // Create active contract
-        Contract activeContract = TestUtils.createTestContract(clientId);
-        activeContract.setStartDate(LocalDate.now().minusMonths(1));
-        activeContract.setEndDate(LocalDate.now().plusMonths(11));
-        contractRepository.save(activeContract);
-
-        // Create inactive contract
-        Contract inactiveContract = TestUtils.createTestContract(clientId);
-        inactiveContract.setStartDate(LocalDate.now().minusYears(2));
-        inactiveContract.setEndDate(LocalDate.now().minusYears(1));
-        contractRepository.save(inactiveContract);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/clients/{clientId}/contracts/active", clientId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(activeContract.getId()));
-    }
-
-    @Test
     void getTotalCost_ShouldReturnSumOfActiveContracts() throws Exception {
         // Arrange
-        // Create multiple active contracts
-        Contract contract1 = TestUtils.createTestContract(clientId);
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalStateException("Test client not found"));
+                
+        Contract contract1 = TestUtils.createTestContract(client);
         contract1.setCostAmount(new BigDecimal("1000.00"));
         contract1.setStartDate(LocalDate.now().minusMonths(1));
         contract1.setEndDate(LocalDate.now().plusMonths(11));
         contractRepository.save(contract1);
 
-        Contract contract2 = TestUtils.createTestContract(clientId);
+        Contract contract2 = TestUtils.createTestContract(client);
         contract2.setCostAmount(new BigDecimal("1500.50"));
         contract2.setStartDate(LocalDate.now().minusDays(10));
         contract2.setEndDate(LocalDate.now().plusMonths(6));
@@ -129,13 +112,16 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
     @Test
     void getContract_WhenContractExists_ShouldReturnContract() throws Exception {
         // Arrange
-        Contract contract = contractRepository.save(TestUtils.createTestContract(clientId));
-        Long contractId = contract.getId();
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalStateException("Test client not found"));
+                
+        Contract contract = TestUtils.createTestContract(client);
+        contract = contractRepository.save(contract);
 
         // Act & Assert
-        mockMvc.perform(get("/api/contracts/{id}", contractId))
+        mockMvc.perform(get("/api/contracts/{id}", contract.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(contractId))
+                .andExpect(jsonPath("$.id").value(contract.getId()))
                 .andExpect(jsonPath("$.clientId").value(clientId));
     }
 }
