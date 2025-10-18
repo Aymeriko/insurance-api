@@ -46,7 +46,7 @@ This API follows a **layered architecture** with clear separation of concerns:
 1. **Clone the repository**
 ```bash
 git clone <repository-url>
-cd vaudoise-api
+cd insurance-api
 ```
 
 2. **Build the project**
@@ -63,7 +63,7 @@ The API will start on `http://localhost:8080`
 
 ### Database Console
 Access H2 console at: `http://localhost:8080/h2-console`
-- JDBC URL: `jdbc:h2:file:./data/vaudoise`
+- JDBC URL: `jdbc:h2:file:./data/insurance`
 - Username: `sa`
 - Password: *(leave empty)*
 
@@ -217,7 +217,7 @@ curl http://localhost:8080/api/clients/1/contracts/total-cost
 
 ### Using Postman
 
-Import the provided collection: `docs/Vaudoise-API.postman_collection.json`
+Import the provided collection: `docs/Insurance-API.postman_collection.json`
 
 ### Validation Examples
 
@@ -268,9 +268,9 @@ Response: `400 Bad Request` - Must be positive
 ## 📁 Project Structure
 
 ```
-vaudoise-api/
-├── src/main/java/ch/vaudoise/api/
-│   ├── VaudoiseApiApplication.java      # Main application class
+insurance-api/
+├── src/main/java/ch/insurance/api/
+│   ├── InsuranceApiApplication.java      # Main application class
 │   ├── controller/                      # REST controllers
 │   │   ├── ClientController.java
 │   │   └── ContractController.java
@@ -347,7 +347,7 @@ vaudoise-api/
 
 ## 📝 Notes
 
-- Database persists in `./data/vaudoise.mv.db`
+- Database persists in `./data/insurance.mv.db`
 - All dates use ISO 8601 format
 - Active contracts: `endDate == null OR endDate > currentDate`
 - lastModifiedDate is internal and not exposed in API responses
@@ -361,7 +361,7 @@ vaudoise-api/
 ### Building for Production
 ```bash
 mvn clean package
-java -jar target/vaudoise-api-1.0.0.jar
+java -jar target/insurance-api-1.0.0.jar
 ```
 
 ### Running Tests

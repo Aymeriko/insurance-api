@@ -12,10 +12,10 @@
         <relativePath/>
     </parent>
     
-    <groupId>ch.vaudoise</groupId>
-    <artifactId>vaudoise-api</artifactId>
+    <groupId>ch.insurance</groupId>
+    <artifactId>insurance-api</artifactId>
     <version>1.0.0</version>
-    <name>vaudoise-api</name>
+    <name>insurance-api</name>
     <description>Insurance Client and Contract Management API</description>
     
     <properties>
@@ -52,7 +52,6 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
 
         <!-- H2 Database -->
         <dependency>

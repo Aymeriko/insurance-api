@@ -1,4 +1,4 @@
-package ch.vaudoise.api.domain;
+package ch.insurance.api.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
