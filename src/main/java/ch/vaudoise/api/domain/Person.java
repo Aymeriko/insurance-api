@@ -24,7 +24,7 @@ public class Person extends Client {
 
     @NotNull(message = "Birthdate is required for person")
     @Past(message = "Birthdate must be in the past")
-    @Column(name = "birthdate", nullable = false, updatable = false)
+    @Column(name = "birthdate", updatable = false)
     private LocalDate birthdate;
 
     @Override

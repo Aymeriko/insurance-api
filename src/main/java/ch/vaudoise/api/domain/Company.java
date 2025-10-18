@@ -22,7 +22,7 @@ public class Company extends Client {
 
     @NotBlank(message = "Company identifier is required")
     @Pattern(regexp = "^[A-Z]{3}-[0-9]{3}$", message = "Company identifier must match format: XXX-123")
-    @Column(name = "company_identifier", nullable = false, unique = true, updatable = false)
+    @Column(name = "company_identifier", unique = true, updatable = false)
     private String companyIdentifier;
 
     @Override
