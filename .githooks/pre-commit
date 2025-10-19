@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# For Windows compatibility
+if [ -f "/proc/version" ] && grep -q "Microsoft" /proc/version; then
+    # Running in WSL
+    MVN_CMD="mvn"
+else
+    # Running in Windows
+    MVN_CMD="mvn.cmd"
+fi
+
+# Run spotless check
+echo "Running Spotless check..."
+$MVN_CMD spotless:check
+
+# Capture the exit code from the mvn command
+RESULT=$?
+
+# If the check failed, try to apply the formatting
+if [ $RESULT -ne 0 ]; then
+  echo "Code formatting issues found. Attempting to fix them automatically..."
+  $MVN_CMD spotless:apply
+  
+  # Check if there are any changes after applying the formatting
+  if ! git diff --quiet; then
+    echo ""
+    echo "⚠️  Code was automatically reformatted. Please review and commit the changes."
+    echo "   You can use 'git diff' to see the changes made by Spotless."
+    echo ""
+    
+    # Stage the changes made by spotless:apply
+    git add .
+    
+    # Inform the user they need to commit again
+    echo "✅  Please run 'git commit' again to commit the formatted code."
+    exit 1
+  else
+    echo "ℹ️  No formatting changes were needed after all. You can commit again."
+    exit 1
+  fi
+fi
+
+echo "✅  Code formatting check passed!"
+exit 0
