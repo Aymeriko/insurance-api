@@ -29,18 +29,15 @@ jobs:
 
     - name: Run JaCoCo with coverage check
       run: |
-        # Generate coverage report
         mvn -B verify \
-          -DskipTests=false \
-          -Dmaven.javadoc.skip=true \
-          -Dmaven.source.skip \
-          org.jacoco:jacoco-maven-plugin:prepare-agent \
-          org.jacoco:jacoco-maven-plugin:check \
-          -Djacoco.haltOnFailure=true \
-          -Djacoco.lineRatio=0.7 \
-          -Djacoco.instructionRatio=0.7 \
-          -Djacoco.complexityMax=20 \
-          -Djacoco.excludes='**/model/*.class'  # Exclude model classes if needed
+        -DskipTests=false \
+        -Dmaven.javadoc.skip=true \
+        -Dmaven.source.skip \
+        -Djacoco.haltOnFailure=true \
+        -Djacoco.lineRatio=0.7 \
+        -Djacoco.instructionRatio=0.7 \
+        -Djacoco.complexityMax=20 \
+        -Djacoco.excludes='**/model/*.class'
 
     - name: Upload coverage report
       if: success() || failure()  # Always upload report, even if checks fail
