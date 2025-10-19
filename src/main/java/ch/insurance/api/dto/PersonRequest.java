@@ -14,8 +14,11 @@ import java.time.LocalDate;
 @Builder
 public class PersonRequest {
 
-    @NotBlank(message = "Name is required")
-    private String name;
+    @NotBlank(message = "First name is required")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    private String lastName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
@@ -27,5 +30,9 @@ public class PersonRequest {
 
     @NotNull(message = "Birthdate is required")
     @Past(message = "Birthdate must be in the past")
-    private LocalDate birthdate;
+    private LocalDate birthDate;
+
+    @NotNull(message = "Client type is mandatory")
+    @Pattern(regexp = "PERSON", message = "Client type must be 'PERSON' for person requests")
+    private String clientType;
 }

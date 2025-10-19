@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CompanyRequest {
 
-    @NotBlank(message = "Name is required")
-    private String name;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")

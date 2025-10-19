@@ -1,17 +1,19 @@
 package ch.insurance.api.integration;
 
 import ch.insurance.api.TestUtils;
+import ch.insurance.api.domain.Client;
 import ch.insurance.api.domain.Person;
+import ch.insurance.api.dto.ClientUpdateRequest;
 import ch.insurance.api.dto.PersonRequest;
 import ch.insurance.api.repository.ClientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.*;
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -21,40 +23,47 @@ class ClientControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void createPerson_ShouldReturnCreated() throws Exception {
-        // Arrange
         PersonRequest request = TestUtils.createPersonRequest();
 
-        // Act & Assert
         mockMvc.perform(post("/api/clients/persons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.clientType").value("PERSON"))
-                .andExpect(jsonPath("$.name").value(request.getName()))
-                .andExpect(jsonPath("$.email").value(request.getEmail()));
+                .andExpect(jsonPath("$.email").value(request.getEmail()))
+                .andExpect(jsonPath("$.phone").value(request.getPhone()))
+                .andExpect(jsonPath("$.createdAt").isNotEmpty())
+                .andExpect(jsonPath("$.updatedAt").isNotEmpty())
+                .andExpect(jsonPath("$.clientType").value(Client.ClientType.PERSON.name()));
+
     }
 
     @Test
     void getClient_WhenClientExists_ShouldReturnClient() throws Exception {
-        // Arrange
-        Person person = TestUtils.createTestPerson();
+        Person person = TestUtils.createTestSavedPerson();
         person = clientRepository.save(person);
         Long clientId = person.getId();
 
-        // Act & Assert
         mockMvc.perform(get("/api/clients/{id}", clientId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(clientId))
                 .andExpect(jsonPath("$.clientType").value("PERSON"))
-                .andExpect(jsonPath("$.name").value(person.getName()));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.phone").value("+41231234567"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.createdAt").isNotEmpty())
+                .andExpect(jsonPath("$.updatedAt").isNotEmpty())
+                .andExpect(jsonPath("$.birthDate").value("1990-01-01"));
     }
 
     @Test
     void getClient_WhenClientNotExists_ShouldReturnNotFound() throws Exception {
-        // Act & Assert
         mockMvc.perform(get("/api/clients/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").exists());
@@ -62,39 +71,49 @@ class ClientControllerIntegrationTest extends IntegrationTestBase {
 
     @Test
     void updateClient_ShouldReturnUpdatedClient() throws Exception {
-        // Arrange
-        Person person = clientRepository.save(TestUtils.createTestPerson());
+        // Given
+        Person person = clientRepository.save(TestUtils.createTestSavedPerson());
         Long clientId = person.getId();
 
-        String updatedName = "Updated Name";
+        String updatedFirstName = "Updated firstName";
+        String updatedLastName = "Updated lastName";
         String updatedEmail = "updated@example.com";
         String updatedPhone = "+41123456789";
+        LocalDate updatedBirthDate = LocalDate.of(1958, 5, 1);
 
-        String requestBody = String.format(
-                "{\"name\":\"%s\",\"email\":\"%s\",\"phone\":\"%s\"}",
-                updatedName,
-                updatedEmail,
-                updatedPhone
-        );
+        ClientUpdateRequest updateRequest = ClientUpdateRequest.builder()
+                .firstName(updatedFirstName)
+                .lastName(updatedLastName)
+                .email(updatedEmail)
+                .phone(updatedPhone)
+                .birthDate(updatedBirthDate)
+                .build();
 
-        // Act & Assert
+        String requestBody = objectMapper.writeValueAsString(updateRequest);
+
+        // Then
         mockMvc.perform(put("/api/clients/{id}", clientId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
+                // Updated values
                 .andExpect(jsonPath("$.id").value(clientId))
-                .andExpect(jsonPath("$.name").value(updatedName))
+                .andExpect(jsonPath("$.firstName").value(updatedFirstName))
+                .andExpect(jsonPath("$.lastName").value(updatedLastName))
                 .andExpect(jsonPath("$.email").value(updatedEmail))
-                .andExpect(jsonPath("$.phone").value(updatedPhone));
+                .andExpect(jsonPath("$.phone").value(updatedPhone))
+                .andExpect(jsonPath("$.birthDate").value("1958-05-01"))
+                // Default values
+                .andExpect(jsonPath("$.clientType").value("PERSON"))
+                .andExpect(jsonPath("$.createdAt").isNotEmpty())
+                .andExpect(jsonPath("$.updatedAt").isNotEmpty());
     }
 
     @Test
     void deleteClient_ShouldReturnNoContent() throws Exception {
-        // Arrange
-        Person person = clientRepository.save(TestUtils.createTestPerson());
+        Person person = clientRepository.save(TestUtils.createTestSavedPerson());
         Long clientId = person.getId();
 
-        // Act & Assert
         mockMvc.perform(delete("/api/clients/{id}", clientId))
                 .andExpect(status().isNoContent());
 

@@ -16,11 +16,16 @@ public class ClientResponse {
 
     private Long id;
     private String clientType;
-    private String name;
     private String email;
     private String phone;
-    private LocalDate birthdate;
-    private String companyIdentifier;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // for person
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+
+    // for company
+    private String companyIdentifier;
 }
