@@ -36,6 +36,7 @@ jobs:
         -Djacoco.haltOnFailure=true \
         -Djacoco.lineRatio=0.7 \
         -Djacoco.instructionRatio=0.7 \
+        -Djacoco.branchRatio=0.7 \
         -Djacoco.complexityMax=20 \
         -Djacoco.excludes='**/model/*.class'
 
