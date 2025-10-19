@@ -1,16 +1,16 @@
-name: Java CI with Maven
+name: Run unit tests
 
 on:
   push:
     branches: [ '**' ]
-    paths-ignore: # Skip CI for non-code changes
+    paths-ignore:
       - '**/*.md'
       - '**/*.txt'
       - '**/.gitignore'
       - '**/README*'
   pull_request:
     branches: [ '**' ]
-    paths-ignore: # Skip CI for non-code changes
+    paths-ignore:
       - '**/*.md'
       - '**/*.txt'
       - '**/.gitignore'
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '21' ]  # Can add more versions if needed
+        java: [ '21' ]
 
     steps:
     - uses: actions/checkout@v4
