@@ -17,8 +17,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Required for code coverage comparison
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -27,33 +25,25 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Run JaCoCo with coverage check
-      run: |
-        mvn -B verify \
-        -DskipTests=false \
-        -Dmaven.javadoc.skip=true \
-        -Dmaven.source.skip \
-        -Djacoco.haltOnFailure=true \
-        -Djacoco.lineRatio=0.7 \
-        -Djacoco.instructionRatio=0.7 \
-        -Djacoco.branchRatio=0.7 \
-        -Djacoco.complexityMax=20 \
-        -Djacoco.excludes='**/model/*.class'
+    - name: Build and Generate Coverage Report (Maven)
+      if: success() || failure()
+      run: mvn clean install -DskipTests=false
 
-    - name: Upload coverage report
-      if: success() || failure()  # Always upload report, even if checks fail
+    - name: JaCoCo Coverage Report
+      if: github.event_name == 'pull_request'
+      uses: code-coverage/jacoco-action@v2
+      with:
+        # Path to the generated JaCoCo XML report file
+        path: target/site/jacoco/jacoco.xml  # Default path for Maven
+        # Sets a minimum coverage percentage for the PR to pass
+        minimum_coverage: 70
+        # Posts a comment to the Pull Request with the coverage difference
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # The base branch to compare the coverage against
+        base_branch: ${{ github.event.pull_request.base.ref }}
+
+    - name: Upload JaCoCo HTML Report as Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report
-        path: '**/target/site/jacoco/**/*'
-        retention-days: 7
-
-    - name: Generate coverage report
-      if: always()
-      run: |
-        # Generate HTML report for viewing
-        mvn -B jacoco:report
-        
-        # Print coverage summary to console
-        echo "=== Code Coverage Summary ==="
-        grep -A 5 'COVERAGE' $(find . -name 'jacoco.csv' | head -1) || echo "No coverage data found"
+        name: jacoco-report-${{ github.sha }}
+        path: target/site/jacoco/ # Path to the HTML report directory (Maven default)
