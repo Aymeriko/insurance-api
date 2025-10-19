@@ -52,7 +52,6 @@ public class ContractController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/clients/{clientId}/contracts")
   @Operation(
       summary = "Update contract cost",
       description = "Updates the cost of an existing contract")
@@ -148,4 +147,23 @@ public class ContractController {
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/clients/{clientId}/contracts")
+  public ResponseEntity<ContractResponse> createContract(
+      @PathVariable Long clientId, @Valid @RequestBody ContractRequest request) {
+    ContractResponse response = contractService.createContract(clientId, request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @PutMapping("/contracts/{contractId}/cost")
+  public ResponseEntity<ContractResponse> updateContractCost(
+      @PathVariable Long contractId, @Valid @RequestBody ContractCostUpdateRequest request) {
+    ContractResponse response = contractService.updateContractCost(contractId, request);
+    return ResponseEntity.ok(response);
+  }
+
+  @DeleteMapping("/contracts/{contractId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteContract(@PathVariable Long contractId) {
+    contractService.deleteContract(contractId);
+  }
 }
