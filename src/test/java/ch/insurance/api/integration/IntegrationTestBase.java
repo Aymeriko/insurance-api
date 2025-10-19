@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -13,14 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 public class IntegrationTestBase {
 
-    @Autowired
-    protected MockMvc mockMvc;
+  @Autowired protected MockMvc mockMvc;
 
-    @Autowired
-    protected ObjectMapper objectMapper;
+  @Autowired protected ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        // Common setup for all integration tests
-    }
+  @BeforeEach
+  void setUp() {
+    // Common setup for all integration tests
+  }
 }

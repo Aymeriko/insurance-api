@@ -1,0 +1,25 @@
+name: Spotless check
+
+on:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  spotless:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for Spotless to work properly
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+    
+    - name: Check code formatting with Spotless
+      run: mvn spotless:check
