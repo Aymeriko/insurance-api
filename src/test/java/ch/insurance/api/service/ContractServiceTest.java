@@ -47,7 +47,7 @@ class ContractServiceTest {
         // Arrange
         Long clientId = 1L;
         ContractRequest request = TestUtils.createContractRequest();
-        Client client = TestUtils.createTestPerson();
+        Client client = TestUtils.createTestSavedPerson();
         client.setId(clientId);
         Contract contract = TestUtils.createTestContract(client);
         contract.setId(1L);
@@ -69,11 +69,11 @@ class ContractServiceTest {
 
     @Test
     void updateContractCost_ShouldUpdateCostAndReturnUpdatedContract() {
-        // Arrange
+        // Given
         Long contractId = 1L;
         Long clientId = 1L;
         ContractCostUpdateRequest updateRequest = TestUtils.createCostUpdateRequest();
-        Client client = TestUtils.createTestPerson();
+        Client client = TestUtils.createTestSavedPerson();
         client.setId(clientId);
         Contract existingContract = TestUtils.createTestContract(client);
         existingContract.setId(contractId);
@@ -81,10 +81,10 @@ class ContractServiceTest {
         when(contractRepository.findById(contractId)).thenReturn(Optional.of(existingContract));
         when(contractRepository.save(any(Contract.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
+        // When
         ContractResponse response = contractService.updateContractCost(contractId, updateRequest);
 
-        // Assert
+        // Then
         assertNotNull(response);
         assertEquals(0, updateRequest.getCostAmount().compareTo(response.getCostAmount()));
         verify(contractRepository, times(1)).save(any(Contract.class));
@@ -92,10 +92,10 @@ class ContractServiceTest {
 
     @Test
     void getActiveContracts_ShouldReturnFilteredContracts() {
-        // Arrange
+        // Given
         Long clientId = 1L;
         LocalDateTime modifiedAfter = LocalDateTime.now().minusDays(1);
-        Client client = TestUtils.createTestPerson();
+        Client client = TestUtils.createTestSavedPerson();
         client.setId(clientId);
         Contract activeContract = TestUtils.createTestContract(client);
         activeContract.setId(1L);
@@ -106,10 +106,10 @@ class ContractServiceTest {
                 eq(clientId), any(LocalDate.class), eq(modifiedAfter)))
                 .thenReturn(List.of(activeContract));
 
-        // Act
+        // When
         List<ContractResponse> responses = contractService.getActiveContracts(clientId, modifiedAfter);
 
-        // Assert
+        // Then
         assertFalse(responses.isEmpty());
         assertEquals(1, responses.size());
         assertEquals(activeContract.getId(), responses.getFirst().getId());
@@ -117,7 +117,7 @@ class ContractServiceTest {
 
     @Test
     void getTotalCost_ShouldReturnSumOfActiveContracts() {
-        // Arrange
+        // Given
         Long clientId = 1L;
         BigDecimal expectedTotal = new BigDecimal("3000.00");
         Long expectedCount = 2L;
@@ -128,10 +128,10 @@ class ContractServiceTest {
         when(contractRepository.countActiveContractsByClientId(eq(clientId), any(LocalDate.class)))
                 .thenReturn(expectedCount);
 
-        // Act
+        // When
         TotalCostResponse response = contractService.getTotalCost(clientId);
 
-        // Assert
+        // Then
         assertNotNull(response);
         assertEquals(clientId, response.getClientId());
         assertEquals(0, expectedTotal.compareTo(response.getTotalCost()));
@@ -140,13 +140,13 @@ class ContractServiceTest {
 
     @Test
     void createContract_WithInvalidClient_ShouldThrowException() {
-        // Arrange
+        // Given
         Long clientId = 999L;
         ContractRequest request = TestUtils.createContractRequest();
 
         when(clientRepository.existsById(clientId)).thenReturn(false);
 
-        // Act & Assert
+        // When Then
         assertThrows(ResourceNotFoundException.class, 
             () -> contractService.createContract(clientId, request));
     }

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static ch.insurance.api.TestUtils.createTestPerson;
+import static ch.insurance.api.TestUtils.createTestSavedPerson;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,16 +36,16 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
     @BeforeEach
     void setUp() {
         // Create a test client
-        Person client = clientRepository.save(createTestPerson());
+        Person client = clientRepository.save(createTestSavedPerson());
         clientId = client.getId();
     }
 
     @Test
     void createContract_ShouldReturnCreated() throws Exception {
-        // Arrange
+        // Given
         ContractRequest request = TestUtils.createContractRequest();
 
-        // Act & Assert
+        // When Then
         mockMvc.perform(post("/api/clients/{clientId}/contracts", clientId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -59,8 +59,7 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
 
     @Test
     void updateContractCost_ShouldReturnUpdatedContract() throws Exception {
-        // Arrange
-        // Get the client that was created in setUp
+        // Given the client that was created in setUp
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Test client not found"));
                 
@@ -72,7 +71,7 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
         ContractCostUpdateRequest updateRequest = new ContractCostUpdateRequest();
         updateRequest.setCostAmount(newCost);
 
-        // Act & Assert
+        // When Then
         mockMvc.perform(put("/api/contracts/{id}/cost", contractId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest)))
@@ -83,7 +82,7 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
 
     @Test
     void getTotalCost_ShouldReturnSumOfActiveContracts() throws Exception {
-        // Arrange
+        // Given
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Test client not found"));
                 
@@ -101,7 +100,7 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
 
         BigDecimal expectedTotal = new BigDecimal("2500.50");
 
-        // Act & Assert
+        // When Then
         mockMvc.perform(get("/api/clients/{clientId}/contracts/total-cost", clientId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.clientId").value(clientId))
@@ -111,14 +110,14 @@ class ContractControllerIntegrationTest extends IntegrationTestBase {
 
     @Test
     void getContract_WhenContractExists_ShouldReturnContract() throws Exception {
-        // Arrange
+        // Given
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Test client not found"));
                 
         Contract contract = TestUtils.createTestContract(client);
         contract = contractRepository.save(contract);
 
-        // Act & Assert
+        // When Then
         mockMvc.perform(get("/api/contracts/{id}", contract.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(contract.getId()))

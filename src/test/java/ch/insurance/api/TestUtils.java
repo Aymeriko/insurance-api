@@ -9,25 +9,31 @@ import ch.insurance.api.dto.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class TestUtils {
+    static final LocalDateTime fixedDate = LocalDateTime.of(1970, 1, 1, 1, 2, 3);
 
-    public static Person createTestPerson() {
+    public static Person createTestSavedPerson() {
         return Person.builder()
-                .name("John Doe")
+                .clientType(Client.ClientType.PERSON)
+                .firstName("John")
+                .lastName("Doe")
                 .email("john.doe@example.com")
                 .phone("+41231234567")
-                .birthdate(LocalDate.of(1990, 1, 1))
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .createdAt(fixedDate)
+                .updatedAt(fixedDate)
                 .build();
     }
 
-    public static Company createTestCompany() {
+    public static Company createTestSavedCompany() {
         return Company.builder()
-                .name("Test Company")
                 .email("contact@test.com")
                 .phone("+41239876543")
                 .companyIdentifier("TST-123")
+                .clientType(Client.ClientType.COMPANY)
+                .createdAt(fixedDate)
+                .updatedAt(fixedDate)
                 .build();
     }
 
@@ -45,16 +51,17 @@ public class TestUtils {
 
     public static PersonRequest createPersonRequest() {
         return PersonRequest.builder()
-                .name("John Doe")
                 .email("john.doe@example.com")
                 .phone("+41231234567")
-                .birthdate(LocalDate.of(1990, 1, 1))
+                .clientType(Client.ClientType.PERSON.name())
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1990, 1, 1))
                 .build();
     }
 
     public static CompanyRequest createCompanyRequest() {
         return CompanyRequest.builder()
-                .name("Test Company")
                 .email("contact@test.com")
                 .phone("+41239876543")
                 .companyIdentifier("TST-123")

@@ -1,32 +1,30 @@
 package ch.insurance.api.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@DiscriminatorValue("COMPANY")
+@Table(name = "company_details")
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Company extends Client {
+public class Company extends Client{
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "Company identifier is required")
-    @Pattern(regexp = "^[A-Z]{3}-[0-9]{3}$", message = "Company identifier must match format: XXX-123")
-    @Column(name = "company_identifier", unique = true, updatable = false)
+    @Column(name = "company_identifier", nullable = false)
     private String companyIdentifier;
 
-    @Override
-    public String getClientType() {
-        return "COMPANY";
+    public String getName() {
+        return companyIdentifier != null ? companyIdentifier : "";
     }
+
 }
