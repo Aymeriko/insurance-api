@@ -14,7 +14,7 @@
     
     <groupId>ch.insurance</groupId>
     <artifactId>insurance-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>insurance-api</name>
     <description>Insurance Client and Contract Management API</description>
     
@@ -27,6 +27,8 @@
         <googleJavaFormat.version>1.30.0</googleJavaFormat.version>
         <spotless-maven-plugin.version>3.0.0</spotless-maven-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
+        <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
     </properties>
     
     <dependencies>
@@ -130,6 +132,26 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- Version Management -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+            </plugin>
+            
+            <!-- Code Formatting -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
