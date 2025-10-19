@@ -8,13 +8,6 @@ on:
       - '**/*.txt'
       - '**/.gitignore'
       - '**/README*'
-  pull_request:
-    branches: [ '**' ]
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - '**/.gitignore'
-      - '**/README*'
 
 jobs:
   test:
