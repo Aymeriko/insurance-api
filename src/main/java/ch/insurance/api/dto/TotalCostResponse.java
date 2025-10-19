@@ -1,11 +1,11 @@
 package ch.insurance.api.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 public class TotalCostResponse {
 
-    private Long clientId;
-    private BigDecimal totalCost;
-    private Long activeContractsCount;
+  private Long clientId;
+  private BigDecimal totalCost;
+  private Long activeContractsCount;
 }

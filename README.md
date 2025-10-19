@@ -1,6 +1,6 @@
 # Vaudoise Insurance API
 
-A RESTful API for managing insurance clients and contracts, built with Spring Boot and Java 17.
+A RESTful API for managing insurance clients and contracts, built with Spring Boot and Java 21.
 
 ## 📋 Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -18,7 +18,7 @@ A RESTful API for managing insurance clients and contracts, built with Spring Bo
 
 This API follows a **layered architecture** with clear separation of concerns:
 
-**1. Domain Layer**: Entities use Single Table Inheritance for Client polymorphism (Person/Company), enabling type-safe operations while maintaining referential integrity. Immutable fields (birthdate, companyIdentifier) are enforced at the database level.
+**1. Domain Layer**: Entities use Single Table Inheritance for Client polymorphism (Person/Company), enabling type-safe operations while maintaining referential integrity. Immutable fields (birthDate, companyIdentifier) are enforced at the database level.
 
 **2. Repository Layer**: Spring Data JPA with optimized queries. The performant total-cost endpoint uses a single aggregation query with proper indexing on endDate and clientId.
 
@@ -38,7 +38,7 @@ This API follows a **layered architecture** with clear separation of concerns:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Java 17 or higher
+- Java 21 or higher
 - Maven 3.6+
 
 ### Running the Application
@@ -87,7 +87,7 @@ Content-Type: application/json
   "name": "John Doe",
   "email": "john.doe@example.com",
   "phone": "+41 21 123 45 67",
-  "birthdate": "1990-05-15"
+  "birthDate": "1990-05-15"
 }
 ```
 
@@ -125,7 +125,7 @@ Content-Type: application/json
   "phone": "+41 21 111 22 33"
 }
 ```
-*Note: birthdate and companyIdentifier cannot be updated*
+*Note: birthDate and companyIdentifier cannot be updated*
 
 #### Delete Client
 ```http
@@ -197,7 +197,7 @@ curl -X POST http://localhost:8080/api/clients/persons \
     "name": "Alice Smith",
     "email": "alice@example.com",
     "phone": "+41211234567",
-    "birthdate": "1985-03-20"
+    "birthDate": "1985-03-20"
   }'
 ```
 
@@ -229,7 +229,7 @@ The API validates all inputs:
   "name": "Test",
   "email": "invalid-email",
   "phone": "+41211234567",
-  "birthdate": "1990-01-01"
+  "birthDate": "1990-01-01"
 }
 ```
 Response: `400 Bad Request` with validation errors
@@ -254,7 +254,7 @@ Response: `400 Bad Request` - Must be positive
 
 ## 🛠️ Technical Stack
 
-- **Java 17** - Programming language
+- **Java 21** - Programming language
 - **Spring Boot 3.2.0** - Application framework
 - **Spring Data JPA** - Data persistence
 - **Hibernate** - ORM
