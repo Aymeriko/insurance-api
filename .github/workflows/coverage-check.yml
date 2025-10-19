@@ -25,25 +25,17 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Build and Generate Coverage Report (Maven)
-      if: success() || failure()
-      run: mvn clean install -DskipTests=false
+    - name: Build and check coverage
+      run: |
+        mvn clean verify \
+          -Dmaven.javadoc.skip=true \
+          -Dmaven.source.skip=true \
+          -Djacoco.haltOnFailure=true
 
-    - name: JaCoCo Coverage Report
-      if: github.event_name == 'pull_request'
-      uses: code-coverage/jacoco-action@v2
-      with:
-        # Path to the generated JaCoCo XML report file
-        path: target/site/jacoco/jacoco.xml  # Default path for Maven
-        # Sets a minimum coverage percentage for the PR to pass
-        minimum_coverage: 70
-        # Posts a comment to the Pull Request with the coverage difference
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # The base branch to compare the coverage against
-        base_branch: ${{ github.event.pull_request.base.ref }}
-
-    - name: Upload JaCoCo HTML Report as Artifact
+    - name: Upload JaCoCo report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report-${{ github.sha }}
-        path: target/site/jacoco/ # Path to the HTML report directory (Maven default)
+        name: jacoco-report
+        path: target/site/jacoco/
+        retention-days: 7
