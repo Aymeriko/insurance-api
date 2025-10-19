@@ -1,0 +1,62 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [ '**' ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/.gitignore'
+      - '**/README*'
+      - '.github/**'
+      - '**/src/test/**'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for code coverage comparison
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Run JaCoCo with coverage check
+      run: |
+        # Generate coverage report
+        mvn -B verify \
+          -DskipTests=false \
+          -Dmaven.javadoc.skip=true \
+          -Dmaven.source.skip \
+          org.jacoco:jacoco-maven-plugin:prepare-agent \
+          org.jacoco:jacoco-maven-plugin:check \
+          -Djacoco.haltOnFailure=true \
+          -Djacoco.lineRatio=0.8 \
+          -Djacoco.instructionRatio=0.8 \
+          -Djacoco.branchRatio=0.8 \
+          -Djacoco.complexityMax=20 \
+          -Djacoco.excludes='**/model/*.class'  # Exclude model classes if needed
+
+    - name: Upload coverage report
+      if: success() || failure()  # Always upload report, even if checks fail
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report
+        path: '**/target/site/jacoco/**/*'
+        retention-days: 7
+
+    - name: Generate coverage report
+      if: always()
+      run: |
+        # Generate HTML report for viewing
+        mvn -B jacoco:report
+        
+        # Print coverage summary to console
+        echo "=== Code Coverage Summary ==="
+        grep -A 5 'COVERAGE' $(find . -name 'jacoco.csv' | head -1) || echo "No coverage data found"
