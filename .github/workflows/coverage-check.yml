@@ -37,8 +37,8 @@ jobs:
           org.jacoco:jacoco-maven-plugin:prepare-agent \
           org.jacoco:jacoco-maven-plugin:check \
           -Djacoco.haltOnFailure=true \
-          -Djacoco.lineRatio=0.7 \
-          -Djacoco.instructionRatio=0.7 \
+          -Djacoco.lineRatio=${jacoco.minimum.coverage} \
+          -Djacoco.instructionRatio=${jacoco.minimum.coverage} \
           -Djacoco.complexityMax=20 \
           -Djacoco.excludes='**/model/*.class'  # Exclude model classes if needed
 
