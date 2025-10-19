@@ -1,8 +1,8 @@
-name: Spotless Check
+name: Spotless check
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ '**' ]
 
 jobs:
   spotless:
