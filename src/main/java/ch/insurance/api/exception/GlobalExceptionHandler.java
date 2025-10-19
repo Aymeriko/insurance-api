@@ -76,7 +76,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleGenericException(HttpServletRequest request) {
+  public ResponseEntity<ErrorResponse> handleGenericException(
+      HttpServletRequest request) {
 
     ErrorResponse errorResponse =
         ErrorResponse.builder()
