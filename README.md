@@ -8,7 +8,9 @@ A RESTful API for managing insurance clients and contracts, built with Spring Bo
 - [API Documentation](#api-documentation)
 - [Testing the API](#testing-the-api)
 - [Technical Stack](#technical-stack)
-- [Project Structure](#project-structure)
+- [Key Features](#key-features)
+- [Notes](#notes)
+- [Development](#development)
 
 ---
 
@@ -201,7 +203,7 @@ Response: `400 Bad Request` - Must be positive
 ---
 
 
-## 🔍 Key Features
+## ✨ Key Features
 
 ### ✅ Implemented Requirements
 
@@ -245,7 +247,7 @@ Response: `400 Bad Request` - Must be positive
 
 ---
 
-## 👨‍💻 Development
+## 🔧 Development
 
 ### Generate a package locally
 ```bash
