@@ -1,12 +1,12 @@
 package ch.insurance.api.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClientResponse {
 
-  private Long id;
-  private String clientType;
-  private String email;
-  private String phone;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+    private Long id;
+    private String clientType;
+    private String email;
+    private String phone;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-  // for person
-  private String firstName;
-  private String lastName;
-  private LocalDate birthDate;
+    // for person
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
 
-  // for company
-  private String companyIdentifier;
+    // for company
+    private String companyIdentifier;
 }
