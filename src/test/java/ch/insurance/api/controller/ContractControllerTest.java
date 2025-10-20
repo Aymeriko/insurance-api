@@ -152,8 +152,6 @@ class ContractControllerTest {
     // Given
     Long clientId = 1L;
 
-    // FIX: Use isNull() to match the 'null' argument passed by the controller when the
-    // @RequestParam is not present in the HTTP request.
     when(contractService.getActiveContracts(eq(clientId), isNull())).thenReturn(List.of());
 
     // When & Then
@@ -162,7 +160,6 @@ class ContractControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(0));
 
-    // FIX: Use isNull() in the verification step as well.
     verify(contractService).getActiveContracts(eq(clientId), isNull());
   }
 }
