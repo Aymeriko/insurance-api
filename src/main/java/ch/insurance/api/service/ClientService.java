@@ -48,12 +48,14 @@ public class ClientService {
   public ClientResponse createCompany(CompanyRequest request) {
     Company company =
         Company.builder()
+            .companyName(request.getCompanyName())
+            .companyIdentifier(request.getCompanyIdentifier())
             .email(request.getEmail())
             .phone(request.getPhone())
-            .companyIdentifier(request.getCompanyIdentifier())
             .build();
 
     Company savedCompany = clientRepository.save(company);
+
     return mapToResponse(savedCompany);
   }
 
@@ -90,6 +92,12 @@ public class ClientService {
 
       person.setFirstName(newFirstName);
       person.setLastName(newLastName);
+    } else if (client.getClientType().equals(Client.ClientType.COMPANY)
+        && client instanceof Company company) {
+      // Handle company update
+      String newCompanyName =
+          request.getCompanyName() != null ? request.getCompanyName() : company.getCompanyName();
+      company.setCompanyName(newCompanyName);
     }
 
     if (request.getEmail() != null) {

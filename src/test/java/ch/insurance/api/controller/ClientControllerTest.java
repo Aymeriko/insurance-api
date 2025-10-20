@@ -91,13 +91,35 @@ class ClientControllerTest {
   }
 
   @Test
-  void createCompany_WithValidRequest_ShouldReturnCreated() throws Exception {
+  void createCompany_WithMissingName_ShouldReturnBadRequest() throws Exception {
     // Given
     CompanyRequest request =
         CompanyRequest.builder()
             .email("company@example.com")
             .phone("+1234567890")
             .companyIdentifier("ABC-123")
+            //                      .name("La Vaudoise")
+            .build();
+
+    // When & Then
+    mockMvc
+        .perform(
+            post("/api/clients/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void createCompany_WithValidRequest_ShouldReturnCreated() throws Exception {
+    // Given
+    CompanyRequest request =
+        CompanyRequest.builder()
+            .clientType("COMPANY")
+            .email("company@example.com")
+            .phone("+1234567890")
+            .companyIdentifier("ABC-123")
+            .companyName("La Vaudoise")
             .build();
 
     ClientResponse expectedResponse =
@@ -107,6 +129,7 @@ class ClientControllerTest {
             .email("company@example.com")
             .phone("+1234567890")
             .companyIdentifier("ABC-123")
+            .companyName("La Vaudoise")
             .build();
 
     when(clientService.createCompany(any(CompanyRequest.class))).thenReturn(expectedResponse);
@@ -122,6 +145,7 @@ class ClientControllerTest {
         .andExpect(jsonPath("$.clientType").value("COMPANY"))
         .andExpect(jsonPath("$.email").value("company@example.com"))
         .andExpect(jsonPath("$.phone").value("+1234567890"))
+        .andExpect(jsonPath("$.companyName").value("La Vaudoise"))
         .andExpect(jsonPath("$.companyIdentifier").value("ABC-123"));
 
     verify(clientService).createCompany(any(CompanyRequest.class));

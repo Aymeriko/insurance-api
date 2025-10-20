@@ -27,5 +27,6 @@ public class ClientResponse {
   private LocalDate birthDate;
 
   // for company
+  private String companyName;
   private String companyIdentifier;
 }

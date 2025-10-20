@@ -2,6 +2,7 @@ package ch.insurance.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,13 @@ public class CompanyRequest {
   @NotBlank(message = "Phone is required")
   @Pattern(regexp = "^\\+?[0-9\\s\\-()]{7,20}$", message = "Phone number must be valid")
   private String phone;
+
+  @NotBlank(message = "Company name is required")
+  private String companyName;
+
+  @NotNull(message = "Client type is mandatory")
+  @Pattern(regexp = "COMPANY", message = "Client type must be 'COMPANY' for company requests")
+  private String clientType;
 
   @NotBlank(message = "Company identifier is required")
   @Pattern(
