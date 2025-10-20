@@ -163,6 +163,7 @@ public class ClientService {
       builder.birthDate(((Person) client).getBirthDate());
     } else if (client.getClientType().equals(Client.ClientType.COMPANY)) {
       builder.companyIdentifier(((Company) client).getCompanyIdentifier());
+      builder.companyName(((Company) client).getCompanyName());
     }
 
     return builder.build();
