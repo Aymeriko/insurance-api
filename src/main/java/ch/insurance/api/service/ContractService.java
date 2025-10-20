@@ -88,7 +88,7 @@ public class ContractService {
   @Transactional(readOnly = true)
   public TotalCostResponse getTotalCost(Long clientId) {
     if (!clientRepository.existsById(clientId)) {
-      throw new ResourceNotFoundException("Client", clientId);
+      throw new ResourceNotFoundException("Client does not exist", clientId);
     }
 
     LocalDate currentDate = LocalDate.now();
@@ -121,5 +121,18 @@ public class ContractService {
         .costAmount(contract.getCostAmount())
         .createdAt(contract.getCreatedAt())
         .build();
+  }
+
+  @Transactional(readOnly = true)
+  public void deleteContract(Long contractId) {
+    Contract contract =
+        contractRepository
+            .findById(contractId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Contract not found with id: " + contractId));
+
+    contract.setEndDate(LocalDate.now());
+    contract.setLastModifiedDate(LocalDateTime.now());
+    contractRepository.save(contract);
   }
 }
