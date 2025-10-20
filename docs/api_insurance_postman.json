@@ -26,7 +26,7 @@
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8080/api/clients/1/contracts",
+              "raw": "http://localhost:8080/api/clients/:clientId/contracts",
               "protocol": "http",
               "host": [
                 "localhost:8080"
@@ -34,15 +34,20 @@
               "path": [
                 "api",
                 "clients",
-                "1",
+                ":clientId",
                 "contracts"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "key": "clientId",
+                  "value": "1"
+                }
+              ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n//   \"startDate\": \"2025-10-01\",\n//   \"endDate\": \"2027-10-01\",\n  \"costAmount\": 1505.5\n}\n",
+              "raw": "{\n//   \"startDate\": \"2025-10-01\",\n  \"endDate\": \"2025-10-21\",\n  \"costAmount\": 500\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -116,32 +121,6 @@
                   "value": "1"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Contract by ID",
-          "event": [],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "description": "",
-            "url": {
-              "raw": "http://localhost:8080/api/contracts/%7BcontractId%7D",
-              "protocol": "http",
-              "host": [
-                "localhost:8080"
-              ],
-              "path": [
-                "api",
-                "contracts",
-                "%7BcontractId%7D"
-              ],
-              "query": [],
-              "variable": []
             }
           }
         },
@@ -227,7 +206,7 @@
             },
             "description": "",
             "url": {
-              "raw": "http://localhost:8080/api/contracts/:clientId/cost",
+              "raw": "http://localhost:8080/api/contracts/:contractId/cost",
               "protocol": "http",
               "host": [
                 "localhost:8080"
@@ -235,20 +214,20 @@
               "path": [
                 "api",
                 "contracts",
-                ":clientId",
+                ":contractId",
                 "cost"
               ],
               "query": [],
               "variable": [
                 {
-                  "key": "clientId",
+                  "key": "contractId",
                   "value": "1"
                 }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"costAmount\": 1800.00\n}",
+              "raw": "{\n  \"costAmount\": 150\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -337,7 +316,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe2\",\n  \"birthDate\": \"1990-01-15\",\n  \"clientType\": \"PERSON\",\n  \"phone\": \"+33606060606\",\n  \"email\": \"john.doe@example.com\"\n//   \"companyIdentifier\": \"MMM-777\"\n}",
+              "raw": "{\n  \"firstName\": \"Mijoe\",\n  \"lastName\": \"Ndong\",\n  \"birthDate\": \"1993-07-24\",\n  \"clientType\": \"PERSON\",\n  \"phone\": \"+33606060606\",\n  \"email\": \"john.doe@example.com\"\n//   \"companyIdentifier\": \"MMM-777\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -471,7 +450,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n//   \"clientType\": \"PERSON\",\n//   \"birthDate\": \"1990-01-18\"\n  \"phone\": \"+41 21 987 65 45\",\n  \"email\": \"contact@lalala.com\",\n  \"firstName\": \"Arsène\",\n  \"lastName\": \"Lupin\",\n  \"companyIdentifier\": \"ACE-123\"\n}",
+              "raw": "{\n//   \"clientType\": \"PERSON\",\n//   \"birthDate\": \"1990-01-18\"\n  \"phone\": \"+41 21 987 65 46\",\n  \"email\": \"contact@testa.com\",\n  \"firstName\": \"Paul\",\n  \"lastName\": \"Bocuse\",\n  \"companyIdentifier\": \"ACE-124\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
