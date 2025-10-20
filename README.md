@@ -1,4 +1,6 @@
-# Vaudoise Insurance API
+
+![img.png](docs/assets/logo.png)
+#  Insurance API
 
 A RESTful API for managing insurance clients and contracts, built with Spring Boot and Java 21.
 
@@ -11,13 +13,14 @@ A RESTful API for managing insurance clients and contracts, built with Spring Bo
 - [✨ Key Features](#-key-features)
 - [📝 Notes](#-notes)
 - [🔧 Development](#-development)
+- [💡 Enhancements](#-enhancements)
 - [📄 License](#-license)
 
 ---
 
 ## 🏗️ Architecture Overview
 
-### Design Philosophy (Max 1000 chars)
+### Design Philosophy
 
 This API follows a **layered architecture** with clear separation of concerns:
 
@@ -91,7 +94,7 @@ Access H2 console at: `http://localhost:8080/h2-console`
 
 If you use docker : 
 Access postgres using the CLI or a UI tool, for example pgAdmin : 
-![img.png](docs/assets/img.png)
+![img.png](docs/assets/pg_connect.png)
 
 password : insurance123
 
@@ -296,6 +299,11 @@ open target/site/jacoco/index.html
 ```
 
 ---
+
+## 💡 Enhancements
+
+All enhancement ideas are listed in the issue tab of the repository
+
 
 ## 📄 License
 

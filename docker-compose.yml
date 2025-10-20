@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  insurance-api:
+  insurance:
     build: .
-    container_name: insurance-api
+    container_name: api
     ports:
       - "8080:8080"
     environment:

@@ -23,7 +23,7 @@ public class Company extends Client {
   private String companyIdentifier;
 
   @NotBlank(message = "Company name is required")
-  @Column(nullable = false)
+  @Column(name = "company_name", nullable = false)
   private String companyName;
 
   public String getDisplayName() {
