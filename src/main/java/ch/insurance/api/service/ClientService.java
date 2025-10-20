@@ -48,7 +48,7 @@ public class ClientService {
   public ClientResponse createCompany(CompanyRequest request) {
     Company company =
         Company.builder()
-            .companyName(request.getName())
+            .companyName(request.getCompanyName())
             .companyIdentifier(request.getCompanyIdentifier())
             .email(request.getEmail())
             .phone(request.getPhone())

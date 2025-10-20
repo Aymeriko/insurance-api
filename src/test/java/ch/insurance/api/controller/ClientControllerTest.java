@@ -115,10 +115,11 @@ class ClientControllerTest {
     // Given
     CompanyRequest request =
         CompanyRequest.builder()
+            .clientType("COMPANY")
             .email("company@example.com")
             .phone("+1234567890")
             .companyIdentifier("ABC-123")
-            .name("La Vaudoise")
+            .companyName("La Vaudoise")
             .build();
 
     ClientResponse expectedResponse =
@@ -128,6 +129,7 @@ class ClientControllerTest {
             .email("company@example.com")
             .phone("+1234567890")
             .companyIdentifier("ABC-123")
+            .companyName("La Vaudoise")
             .build();
 
     when(clientService.createCompany(any(CompanyRequest.class))).thenReturn(expectedResponse);
@@ -143,6 +145,7 @@ class ClientControllerTest {
         .andExpect(jsonPath("$.clientType").value("COMPANY"))
         .andExpect(jsonPath("$.email").value("company@example.com"))
         .andExpect(jsonPath("$.phone").value("+1234567890"))
+        .andExpect(jsonPath("$.companyName").value("La Vaudoise"))
         .andExpect(jsonPath("$.companyIdentifier").value("ABC-123"));
 
     verify(clientService).createCompany(any(CompanyRequest.class));

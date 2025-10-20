@@ -25,7 +25,7 @@ public class CompanyRequest {
   private String phone;
 
   @NotBlank(message = "Company name is required")
-  private String name;
+  private String companyName;
 
   @NotNull(message = "Client type is mandatory")
   @Pattern(regexp = "COMPANY", message = "Client type must be 'COMPANY' for company requests")

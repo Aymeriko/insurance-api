@@ -50,20 +50,20 @@ classDiagram
     %% Inheritance
     Client <|-- Person
     Client <|-- Company
-    
+
     %% Associations
     Client "1" -- "0..*" Contract : has >
     Contract "0..*" -- "1" Client : belongs to <
-    
+
     %% Composition
     Client *-- ClientType : type
-    
+
     %% Notes
     note for Client "Abstract base class for all client types\n- Uses JOINED inheritance strategy\n- Automatically sets timestamps"
-    
+
     note for Person "Stores individual person details\n- First/Last name required\n- Birth date must be in past"
-    
+
     note for Company "Stores company information\n- Company identifier format: XXX-999\n- Company name is required"
-    
+
     note for Contract "Insurance contracts\n- Start date defaults to now\n- Tracks modifications"
 ```
