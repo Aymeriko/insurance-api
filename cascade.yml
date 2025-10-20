@@ -15,8 +15,14 @@ ai_agent:
     import_order: ["java", "javax", "jakarta", "org", "com", "ch.insurance"]
   testing:
     framework: "junit-jupiter"
-    test_naming: "methodName_shouldExpectedBehavior_whenStateUnderTest"
+    test_naming: "given[State]_when[Action]_then[Result]"
+    naming_examples:
+      - "givenUserExists_whenUserIsDeleted_thenUserIsInactive"
+      - "givenInvalidInput_whenProcessing_thenThrowsException"
     coverage_threshold: 80
+    conventions:
+      - "Keep tests independent and isolated"
+      - "Use @BeforeEach for common setup"
   documentation:
     style: "asciidoc"
     include_diagrams: true
