@@ -3,6 +3,8 @@ package ch.insurance.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,8 +25,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ch.insurance.api.TestUtils;
 import ch.insurance.api.domain.Client;
+import ch.insurance.api.domain.Contract;
 import ch.insurance.api.dto.ContractResponse;
 import ch.insurance.api.exception.ResourceNotFoundException;
+import ch.insurance.api.repository.ContractRepository;
 import ch.insurance.api.service.ContractService;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +38,12 @@ class ContractControllerTest {
 
   @Mock private ContractService contractService;
 
+  @Mock private ContractRepository contractRepository;
+
   @InjectMocks private ContractController contractController;
+
+  private Client testClient;
+  private Contract testContract;
 
   @BeforeEach
   void setUp() {
