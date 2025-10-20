@@ -1,0 +1,69 @@
+```mermaid
+classDiagram
+    %% Abstract Base Class
+    class Client {
+        <<Abstract>>
+        +Long id
+        +String email
+        +String phone
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+        +ClientType clientType
+    }
+
+    %% Person Class
+    class Person {
+        +String firstName
+        +String lastName
+        +LocalDate birthDate
+        +String getName()
+    }
+
+    %% Company Class
+    class Company {
+        +String companyName
+        +String companyIdentifier
+        +String getDisplayName()
+    }
+
+    %% Contract Class
+    class Contract {
+        +Long id
+        +LocalDate startDate
+        +LocalDate endDate
+        +BigDecimal costAmount
+        +LocalDateTime lastModifiedDate
+        +LocalDateTime createdAt
+        +Client client
+        +boolean isActive()
+        +onCreate()
+        +onUpdate()
+    }
+
+    %% Enumeration
+    class ClientType {
+        <<enumeration>>
+        PERSON
+        COMPANY
+    }
+
+    %% Inheritance
+    Client <|-- Person
+    Client <|-- Company
+    
+    %% Associations
+    Client "1" -- "0..*" Contract : has >
+    Contract "0..*" -- "1" Client : belongs to <
+    
+    %% Composition
+    Client *-- ClientType : type
+    
+    %% Notes
+    note for Client "Abstract base class for all client types\n- Uses JOINED inheritance strategy\n- Automatically sets timestamps"
+    
+    note for Person "Stores individual person details\n- First/Last name required\n- Birth date must be in past"
+    
+    note for Company "Stores company information\n- Company identifier format: XXX-999\n- Company name is required"
+    
+    note for Contract "Insurance contracts\n- Start date defaults to now\n- Tracks modifications"
+```

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import ch.insurance.api.domain.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +18,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClientUpdateRequest {
 
-  private Client.ClientType clientType;
-
   @Email(message = "Email must be valid")
   private String email;
 
@@ -30,6 +27,9 @@ public class ClientUpdateRequest {
   // For Person
   private String firstName;
   private String lastName;
+
+  // For Company
+  private String companyName;
 
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,

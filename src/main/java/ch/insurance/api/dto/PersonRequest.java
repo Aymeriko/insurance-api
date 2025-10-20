@@ -29,8 +29,8 @@ public class PersonRequest {
   @Pattern(regexp = "^\\+?[0-9\\s\\-()]{7,20}$", message = "Phone number must be valid")
   private String phone;
 
-  @NotNull(message = "Birthdate is required")
-  @Past(message = "Birthdate must be in the past")
+  @NotNull(message = "BirthDate is required")
+  @Past(message = "BirthDate must be in the past")
   private LocalDate birthDate;
 
   @NotNull(message = "Client type is mandatory")

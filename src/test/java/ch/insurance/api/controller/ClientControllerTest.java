@@ -91,6 +91,26 @@ class ClientControllerTest {
   }
 
   @Test
+  void createCompany_WithMissingName_ShouldReturnBadRequest() throws Exception {
+    // Given
+    CompanyRequest request =
+        CompanyRequest.builder()
+            .email("company@example.com")
+            .phone("+1234567890")
+            .companyIdentifier("ABC-123")
+            //                      .name("La Vaudoise")
+            .build();
+
+    // When & Then
+    mockMvc
+        .perform(
+            post("/api/clients/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
   void createCompany_WithValidRequest_ShouldReturnCreated() throws Exception {
     // Given
     CompanyRequest request =
@@ -98,6 +118,7 @@ class ClientControllerTest {
             .email("company@example.com")
             .phone("+1234567890")
             .companyIdentifier("ABC-123")
+            .name("La Vaudoise")
             .build();
 
     ClientResponse expectedResponse =
