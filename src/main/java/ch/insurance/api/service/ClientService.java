@@ -87,21 +87,9 @@ public class ClientService {
           request.getFirstName() != null ? request.getFirstName() : person.getFirstName();
       String newLastName =
           request.getLastName() != null ? request.getLastName() : person.getLastName();
-      LocalDate newBirthdate =
-          request.getBirthDate() != null ? request.getBirthDate() : person.getBirthDate();
 
       person.setFirstName(newFirstName);
       person.setLastName(newLastName);
-      person.setBirthDate(newBirthdate);
-
-    } else if (client.getClientType().equals(Client.ClientType.COMPANY)
-        && client instanceof Company company) {
-      // Handle company update
-      String newCompanyIdentifier =
-          request.getCompanyIdentifier() != null
-              ? request.getCompanyIdentifier()
-              : company.getCompanyIdentifier();
-      company.setCompanyIdentifier(newCompanyIdentifier);
     }
 
     if (request.getEmail() != null) {

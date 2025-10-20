@@ -53,55 +53,6 @@ public class ContractController {
   }
 
   @Operation(
-      summary = "Update contract cost",
-      description = "Updates the cost of an existing contract")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Contract cost updated successfully",
-            content = @Content(schema = @Schema(implementation = ContractResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Contract not found")
-      })
-  @PutMapping(
-      value = "/contracts/{contractId}/cost",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ContractResponse> updateContractCost(
-      @Parameter(description = "ID of the contract to update", required = true) @PathVariable
-          Long contractId,
-      @Valid @RequestBody ContractCostUpdateRequest request) {
-    ContractResponse response = contractService.updateContractCost(contractId, request);
-    return ResponseEntity.ok(response);
-  }
-
-  @Operation(
-      summary = "Create a new contract",
-      description = "Creates a new insurance contract for a client")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Contract created successfully",
-            content = @Content(schema = @Schema(implementation = ContractResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input"),
-        @ApiResponse(responseCode = "404", description = "Client not found")
-      })
-  @PostMapping(
-      value = "/clients/{clientId}/contracts",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ContractResponse> createContract(
-      @Parameter(description = "ID of the client for whom to create the contract", required = true)
-          @PathVariable
-          Long clientId,
-      @Valid @RequestBody ContractRequest request) {
-    ContractResponse response = contractService.createContract(clientId, request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
-
-  @Operation(
       summary = "Get active contracts",
       description =
           "Retrieves all active contracts for a client, optionally filtered by modification date")
@@ -145,5 +96,71 @@ public class ContractController {
       @Parameter(description = "ID of the client", required = true) @PathVariable Long clientId) {
     TotalCostResponse response = contractService.getTotalCost(clientId);
     return ResponseEntity.ok(response);
+  }
+
+  @Operation(
+      summary = "Create a new contract",
+      description = "Creates a new insurance contract for a client")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Contract created successfully",
+            content = @Content(schema = @Schema(implementation = ContractResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "404", description = "Client not found")
+      })
+  @PostMapping(
+      value = "/clients/{clientId}/contracts",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ContractResponse> createContract(
+      @Parameter(description = "ID of the client for whom to create the contract", required = true)
+          @PathVariable
+          Long clientId,
+      @Valid @RequestBody ContractRequest request) {
+    ContractResponse response = contractService.createContract(clientId, request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @Operation(
+      summary = "Update contract cost",
+      description = "Updates the cost of an existing contract")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Contract cost updated successfully",
+            content = @Content(schema = @Schema(implementation = ContractResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "404", description = "Contract not found")
+      })
+  @PutMapping(
+      value = "/contracts/{contractId}/cost",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ContractResponse> updateContractCost(
+      @Parameter(description = "ID of the contract to update", required = true) @PathVariable
+          Long contractId,
+      @Valid @RequestBody ContractCostUpdateRequest request) {
+    ContractResponse response = contractService.updateContractCost(contractId, request);
+    return ResponseEntity.ok(response);
+  }
+
+  @Operation(
+      summary = "Delete a contract",
+      description =
+          "Deletes a contract with the specified ID. If the contract doesn't exist, a 404 error will be returned.",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Contract was successfully deleted"),
+        @ApiResponse(responseCode = "404", description = "Contract not found", content = @Content)
+      })
+  @DeleteMapping("/contracts/{contractId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteContract(
+      @Parameter(description = "ID of the contract to delete", required = true, example = "123")
+          @PathVariable
+          Long contractId) {
+    contractService.deleteContract(contractId);
   }
 }

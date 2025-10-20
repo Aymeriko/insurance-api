@@ -1,6 +1,5 @@
 package ch.insurance.api.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Email;
@@ -31,12 +30,6 @@ public class ClientUpdateRequest {
   // For Person
   private String firstName;
   private String lastName;
-
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Zurich")
-  private LocalDate birthDate;
-
-  // For Company
-  private String companyIdentifier;
 
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,

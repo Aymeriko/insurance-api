@@ -90,7 +90,6 @@ class ClientControllerIntegrationTest extends IntegrationTestBase {
             .lastName(updatedLastName)
             .email(updatedEmail)
             .phone(updatedPhone)
-            .birthDate(updatedBirthDate)
             .build();
 
     String requestBody = objectMapper.writeValueAsString(updateRequest);
@@ -108,7 +107,7 @@ class ClientControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(jsonPath("$.lastName").value(updatedLastName))
         .andExpect(jsonPath("$.email").value(updatedEmail))
         .andExpect(jsonPath("$.phone").value(updatedPhone))
-        .andExpect(jsonPath("$.birthDate").value("1958-05-01"))
+        .andExpect(jsonPath("$.birthDate").value("1990-01-01"))
         // Default values
         .andExpect(jsonPath("$.clientType").value("PERSON"))
         .andExpect(jsonPath("$.createdAt").isNotEmpty())
