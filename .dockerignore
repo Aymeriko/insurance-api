@@ -1,0 +1,44 @@
+# Maven
+target/
+!.mvn/
+#!mvnw
+!pom.xml
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output
+build/
+
+# Local configuration
+*.properties
+*.yml
+*.yaml
+!application-docker.yml
+
+# Test files
+*.test
+*.test.*
+
+# Other
+.venv/
+.vscode/

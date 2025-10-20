@@ -57,12 +57,26 @@ cd insurance-api
 mvn clean install
 ```
 
-3. **Run the application**
+3.1 **Run the application with maven**
 ```bash
 mvn spring-boot:run
 ```
 
+3.2 **Run the application with docker**
+```bash
+docker build -t insurance-api .
+docker run -d -p 8080:8080 --name la-vaudoise-insurance-api insurance-api
+```
+
 The API will start on `http://localhost:8080`
+
+
+To see running containers and logs:
+```bash
+docker ps
+docker logs <container_id>
+```
+
 
 ### Database Console
 Access H2 console at: `http://localhost:8080/h2-console`
@@ -81,16 +95,16 @@ http://localhost:8080/api
 
 ### Client Endpoints
 
-| Operation | Endpoint | Entity |
-|-----------|----------|--------|
-| Create Person | POST /api/clients/persons | Person |
-| Create Company | POST /api/clients/companies | Company |
-| Get Client | GET /api/clients/{id} | Client |
-| Update Client | PUT/PATCH /api/clients/{id} | Client |
-| Delete Client | DELETE /api/clients/{id} | Client |
-| Create Contract | POST /api/clients/{clientId}/contracts | Contract |
-| Update Contract Cost | PATCH /api/contracts/{id}/cost | Contract |
-| Get Client Contracts | GET /api/clients/{clientId}/contracts | Contract |
+| Operation | Endpoint                                        | Entity |
+|-----------|-------------------------------------------------|--------|
+| Create Person | POST /api/clients/persons                       | Person |
+| Create Company | POST /api/clients/companies                     | Company |
+| Get Client | GET /api/clients/{id}                           | Client |
+| Update Client | PUT /api/clients/{id}                      | Client |
+| Delete Client | DELETE /api/clients/{id}                        | Client |
+| Create Contract | POST /api/clients/{clientId}/contracts          | Contract |
+| Update Contract Cost | PUT /api/contracts/{id}/cost                    | Contract |
+| Get Client Contracts | GET /api/clients/{clientId}/contracts           | Contract |
 | Get Total Cost | GET /api/clients/{clientId}/contracts/total-cost | Contract |
 
 Further documentation available on the [swagger](http://localhost:8080/swagger-ui.html) : 
