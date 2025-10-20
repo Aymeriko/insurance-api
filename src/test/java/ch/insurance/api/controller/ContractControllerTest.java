@@ -1,9 +1,16 @@
 package ch.insurance.api.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +21,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import ch.insurance.api.TestUtils;
 import ch.insurance.api.domain.Client;
-import ch.insurance.api.domain.Contract;
+import ch.insurance.api.dto.ContractResponse;
 import ch.insurance.api.exception.ResourceNotFoundException;
-import ch.insurance.api.repository.ContractRepository;
 import ch.insurance.api.service.ContractService;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,12 +34,7 @@ class ContractControllerTest {
 
   @Mock private ContractService contractService;
 
-  @Mock private ContractRepository contractRepository;
-
   @InjectMocks private ContractController contractController;
-
-  private Client testClient;
-  private Contract testContract;
 
   @BeforeEach
   void setUp() {
@@ -67,5 +69,91 @@ class ContractControllerTest {
         .andExpect(status().isNotFound());
 
     verify(contractService, times(1)).deleteContract(anyLong());
+  }
+
+  @Test
+  void getActiveContracts_WhenClientExists_ShouldReturnContracts() throws Exception {
+    // Given
+    Long clientId = 1L;
+    LocalDateTime modifiedAfter = LocalDateTime.now().minusDays(1);
+
+    Client client = TestUtils.createTestSavedPerson();
+    client.setId(clientId);
+
+    ContractResponse contract1 =
+        ContractResponse.builder()
+            .id(1L)
+            .clientId(clientId)
+            .startDate(LocalDateTime.now().toLocalDate())
+            .endDate(LocalDateTime.now().plusYears(1).toLocalDate())
+            .costAmount(new BigDecimal("1000.00"))
+            .build();
+
+    ContractResponse contract2 =
+        ContractResponse.builder()
+            .id(2L)
+            .clientId(clientId)
+            .startDate(LocalDateTime.now().toLocalDate())
+            .endDate(LocalDateTime.now().plusYears(2).toLocalDate())
+            .costAmount(new BigDecimal("2000.00"))
+            .build();
+
+    List<ContractResponse> contracts = Arrays.asList(contract1, contract2);
+
+    when(contractService.getActiveContracts(eq(clientId), any(LocalDateTime.class)))
+        .thenReturn(contracts);
+
+    // When & Then
+    mockMvc
+        .perform(
+            get("/api/clients/{clientId}/contracts", clientId)
+                .param("modifiedAfter", modifiedAfter.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].id").value(contract1.getId()))
+        .andExpect(jsonPath("$[0].clientId").value(clientId))
+        .andExpect(jsonPath("$[1].id").value(contract2.getId()))
+        .andExpect(jsonPath("$[1].clientId").value(clientId));
+
+    verify(contractService).getActiveContracts(eq(clientId), any(LocalDateTime.class));
+  }
+
+  @Test
+  void getActiveContracts_WhenClientDoesNotExist_ShouldReturnEmptyList() throws Exception {
+    // Given
+    Long nonExistentClientId = 999L;
+    LocalDateTime modifiedAfter = LocalDateTime.now().minusDays(1);
+
+    when(contractService.getActiveContracts(eq(nonExistentClientId), any(LocalDateTime.class)))
+        .thenReturn(List.of());
+
+    // When & Then
+    mockMvc
+        .perform(
+            get("/api/clients/{clientId}/contracts", nonExistentClientId)
+                .param("modifiedAfter", modifiedAfter.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(0));
+
+    verify(contractService).getActiveContracts(eq(nonExistentClientId), any(LocalDateTime.class));
+  }
+
+  @Test
+  void getActiveContracts_WhenModifiedAfterNotProvided_ShouldUseDefaultValue() throws Exception {
+    // Given
+    Long clientId = 1L;
+
+    // FIX: Use isNull() to match the 'null' argument passed by the controller when the
+    // @RequestParam is not present in the HTTP request.
+    when(contractService.getActiveContracts(eq(clientId), isNull())).thenReturn(List.of());
+
+    // When & Then
+    mockMvc
+        .perform(get("/api/clients/{clientId}/contracts", clientId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(0));
+
+    // FIX: Use isNull() in the verification step as well.
+    verify(contractService).getActiveContracts(eq(clientId), isNull());
   }
 }
