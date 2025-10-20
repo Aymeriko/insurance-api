@@ -48,12 +48,14 @@ public class ClientService {
   public ClientResponse createCompany(CompanyRequest request) {
     Company company =
         Company.builder()
+            .companyName(request.getCompanyName())
+            .companyIdentifier(request.getCompanyIdentifier())
             .email(request.getEmail())
             .phone(request.getPhone())
-            .companyIdentifier(request.getCompanyIdentifier())
             .build();
 
     Company savedCompany = clientRepository.save(company);
+
     return mapToResponse(savedCompany);
   }
 
@@ -87,21 +89,15 @@ public class ClientService {
           request.getFirstName() != null ? request.getFirstName() : person.getFirstName();
       String newLastName =
           request.getLastName() != null ? request.getLastName() : person.getLastName();
-      LocalDate newBirthdate =
-          request.getBirthDate() != null ? request.getBirthDate() : person.getBirthDate();
 
       person.setFirstName(newFirstName);
       person.setLastName(newLastName);
-      person.setBirthDate(newBirthdate);
-
     } else if (client.getClientType().equals(Client.ClientType.COMPANY)
         && client instanceof Company company) {
       // Handle company update
-      String newCompanyIdentifier =
-          request.getCompanyIdentifier() != null
-              ? request.getCompanyIdentifier()
-              : company.getCompanyIdentifier();
-      company.setCompanyIdentifier(newCompanyIdentifier);
+      String newCompanyName =
+          request.getCompanyName() != null ? request.getCompanyName() : company.getCompanyName();
+      company.setCompanyName(newCompanyName);
     }
 
     if (request.getEmail() != null) {
@@ -167,6 +163,7 @@ public class ClientService {
       builder.birthDate(((Person) client).getBirthDate());
     } else if (client.getClientType().equals(Client.ClientType.COMPANY)) {
       builder.companyIdentifier(((Company) client).getCompanyIdentifier());
+      builder.companyName(((Company) client).getCompanyName());
     }
 
     return builder.build();

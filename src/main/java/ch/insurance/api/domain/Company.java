@@ -22,7 +22,11 @@ public class Company extends Client {
   @Column(name = "company_identifier", nullable = false)
   private String companyIdentifier;
 
-  public String getName() {
-    return companyIdentifier != null ? companyIdentifier : "";
+  @NotBlank(message = "Company name is required")
+  @Column(name = "company_name", nullable = false)
+  private String companyName;
+
+  public String getDisplayName() {
+    return companyName != null ? companyName : (companyIdentifier != null ? companyIdentifier : "");
   }
 }

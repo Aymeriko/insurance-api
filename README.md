@@ -1,20 +1,26 @@
-# Vaudoise Insurance API
+
+![img.png](docs/assets/logo.png)
+#  Insurance API
 
 A RESTful API for managing insurance clients and contracts, built with Spring Boot and Java 21.
 
 ## 📋 Table of Contents
-- [Architecture Overview](#architecture-overview)
-- [Quick Start](#quick-start)
-- [API Documentation](#api-documentation)
-- [Testing the API](#testing-the-api)
-- [Technical Stack](#technical-stack)
-- [Project Structure](#project-structure)
+- [🏗️ Architecture Overview](#-architecture-overview)
+- [🚀 Quick Start](#-quick-start)
+- [📚 API Documentation](#-api-documentation)
+- [🧪 Testing the API](#-testing-the-api)
+- [🛠️ Technical Stack](#-technical-stack)
+- [✨ Key Features](#-key-features)
+- [📝 Notes](#-notes)
+- [🔧 Development](#-development)
+- [💡 Enhancements](#-enhancements)
+- [📄 License](#-license)
 
 ---
 
 ## 🏗️ Architecture Overview
 
-### Design Philosophy (Max 1000 chars)
+### Design Philosophy
 
 This API follows a **layered architecture** with clear separation of concerns:
 
@@ -28,6 +34,7 @@ This API follows a **layered architecture** with clear separation of concerns:
 
 **Key Decisions**:
 - H2 file-based database for persistence across restarts
+- postgres SQL DB for the dockerized application (not synchronized with H2)
 - Soft-delete pattern preserves audit trail
 - ISO 8601 date formatting throughout
 - Indexed queries for performance
@@ -40,12 +47,13 @@ This API follows a **layered architecture** with clear separation of concerns:
 ### Prerequisites
 - Java 21 or higher
 - Maven 3.6+
+- Spring boot 3.2.0
 
 ### Running the Application
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/Aymeriko/insurance-api.git
 cd insurance-api
 ```
 
@@ -54,18 +62,41 @@ cd insurance-api
 mvn clean install
 ```
 
-3. **Run the application**
+3.1 **Run the application with maven**
 ```bash
 mvn spring-boot:run
 ```
 
+3.2 **Run the application with docker**
+```bash
+docker-compose up -d --build
+docker-compose down
+```
+
+To see running containers and logs:
+```bash
+docker-compose ps
+docker-compose logs insurance-api
+docker-compose logs postgres
+```
+
+
 The API will start on `http://localhost:8080`
 
+
 ### Database Console
+
+If you do not use docker :
 Access H2 console at: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:file:./data/insurance`
 - Username: `sa`
 - Password: *(leave empty)*
+
+If you use docker : 
+Access postgres using the CLI or a UI tool, for example pgAdmin : 
+![img.png](docs/assets/pg_connect.png)
+
+password : insurance123
 
 ---
 
@@ -78,110 +109,24 @@ http://localhost:8080/api
 
 ### Client Endpoints
 
-#### Create Person
-```http
-POST /api/clients/persons
-Content-Type: application/json
+| Operation | Endpoint                                        | Entity |
+|-----------|-------------------------------------------------|--------|
+| Create Person | POST /api/clients/persons                       | Person |
+| Create Company | POST /api/clients/companies                     | Company |
+| Get Client | GET /api/clients/{id}                           | Client |
+| Update Client | PUT /api/clients/{id}                      | Client |
+| Delete Client | DELETE /api/clients/{id}                        | Client |
+| Create Contract | POST /api/clients/{clientId}/contracts          | Contract |
+| Update Contract Cost | PUT /api/contracts/{id}/cost                    | Contract |
+| Get Client Contracts | GET /api/clients/{clientId}/contracts           | Contract |
+| Get Total Cost | GET /api/clients/{clientId}/contracts/total-cost | Contract |
 
-{
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "phone": "+41 21 123 45 67",
-  "birthDate": "1990-05-15"
-}
-```
+Further documentation available on the [swagger](http://localhost:8080/swagger-ui.html) : 
 
-#### Create Company
-```http
-POST /api/clients/companies
-Content-Type: application/json
 
-{
-  "name": "Acme Corporation",
-  "email": "contact@acme.com",
-  "phone": "+41 21 987 65 43",
-  "companyIdentifier": "ACM-123"
-}
-```
+Example API call on docs/api_insurance_postman.json
+Generated using Bruno
 
-#### Get Client
-```http
-GET /api/clients/{id}
-```
-
-#### Get All Clients
-```http
-GET /api/clients
-```
-
-#### Update Client
-```http
-PUT /api/clients/{id}
-Content-Type: application/json
-
-{
-  "name": "Updated Name",
-  "email": "new.email@example.com",
-  "phone": "+41 21 111 22 33"
-}
-```
-*Note: birthDate and companyIdentifier cannot be updated*
-
-#### Delete Client
-```http
-DELETE /api/clients/{id}
-```
-*Note: All active contracts will have their endDate set to current date*
-
-### Contract Endpoints
-
-#### Create Contract
-```http
-POST /api/clients/{clientId}/contracts
-Content-Type: application/json
-
-{
-  "startDate": "2024-01-01",
-  "endDate": "2025-12-31",
-  "costAmount": 1500.50
-}
-```
-*Note: startDate defaults to current date if not provided. endDate can be null for indefinite contracts*
-
-#### Update Contract Cost
-```http
-PATCH /api/contracts/{contractId}/cost
-Content-Type: application/json
-
-{
-  "costAmount": 1750.00
-}
-```
-*Note: Automatically updates lastModifiedDate*
-
-#### Get Active Contracts
-```http
-GET /api/clients/{clientId}/contracts
-```
-
-Optional filter by modification date:
-```http
-GET /api/clients/{clientId}/contracts?modifiedAfter=2024-01-01T00:00:00
-```
-
-#### Get Total Cost (Performant)
-```http
-GET /api/clients/{clientId}/contracts/total-cost
-```
-
-Response:
-```json
-{
-  "clientId": 1,
-  "totalCost": 5250.00,
-  "activeContractsCount": 3
-}
-```
 
 ---
 
@@ -194,20 +139,40 @@ Response:
 curl -X POST http://localhost:8080/api/clients/persons \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Alice Smith",
-    "email": "alice@example.com",
-    "phone": "+41211234567",
-    "birthDate": "1985-03-20"
-  }'
+      "firstName": "Mijoe",
+      "lastName": "Ndong",
+      "birthDate": "1990-01-15",
+      "clientType": "PERSON",
+      "phone": "+33606060606",
+      "email": "john.doe@example.com"  
+    }'
 ```
 
-**Create a Contract:**
+**Create a Contract for client with clientID n°1 :**
+
+Required fields:
+- `costAmount` (required): The cost amount of the contract (must be a positive number with 2 decimal places)
+
+Optional fields:
+- `startDate` (optional, defaults to current date if not provided): The start date of the contract in 'YYYY-MM-DD' format
+- `endDate` (optional): The end date of the contract in 'YYYY-MM-DD' format (null for indefinite contracts)
+
+Example:
 ```bash
 curl -X POST http://localhost:8080/api/clients/1/contracts \
   -H "Content-Type: application/json" \
   -d '{
+    "startDate": "2024-01-01",
+    "endDate": "2025-12-31",
     "costAmount": 2500.00
   }'
+```
+
+Minimum valid request (uses current date as start date and no end date):
+```bash
+curl -X POST http://localhost:8080/api/clients/1/contracts \
+  -H "Content-Type: application/json" \
+  -d '{"costAmount": 1500.50}'
 ```
 
 **Get Total Cost:**
@@ -258,60 +223,15 @@ Response: `400 Bad Request` - Must be positive
 - **Spring Boot 3.2.0** - Application framework
 - **Spring Data JPA** - Data persistence
 - **Hibernate** - ORM
-- **H2 Database** - Embedded database with file persistence
+- **H2 Database (Embedded database with file persistence) or postgres database** - depends how you host the app 
 - **Lombok** - Reduces boilerplate code
 - **Jakarta Bean Validation** - Input validation
 - **Maven** - Build tool
 
 ---
 
-## 📁 Project Structure
 
-```
-insurance-api/
-├── src/main/java/ch/insurance/api/
-│   ├── InsuranceApiApplication.java      # Main application class
-│   ├── controller/                      # REST controllers
-│   │   ├── ClientController.java
-│   │   └── ContractController.java
-│   ├── service/                         # Business logic
-│   │   ├── ClientService.java
-│   │   └── ContractService.java
-│   ├── repository/                      # Data access
-│   │   ├── ClientRepository.java
-│   │   └── ContractRepository.java
-│   ├── domain/                          # Entity models
-│   │   ├── Client.java
-│   │   ├── Person.java
-│   │   ├── Company.java
-│   │   └── Contract.java
-│   ├── dto/                             # Data transfer objects
-│   │   ├── PersonRequest.java
-│   │   ├── CompanyRequest.java
-│   │   ├── ClientUpdateRequest.java
-│   │   ├── ClientResponse.java
-│   │   ├── ContractRequest.java
-│   │   ├── ContractResponse.java
-│   │   ├── ContractCostUpdateRequest.java
-│   │   └── TotalCostResponse.java
-│   └── exception/                       # Exception handling
-│       ├── ResourceNotFoundException.java
-│       ├── GlobalExceptionHandler.java
-│       └── ErrorResponse.java
-├── src/main/resources/
-│   └── application.yml                  # Application configuration
-├── docs/                                # Documentation
-│   ├── DATA_MODEL.md                    # Detailed data model
-│   ├── architecture-diagram.mmd         # Mermaid diagram
-│   └── API_EXAMPLES.md                  # API usage examples
-├── data/                                # H2 database files (auto-created)
-├── pom.xml                              # Maven configuration
-└── README.md                            # This file
-```
-
----
-
-## 🔍 Key Features
+## ✨ Key Features
 
 ### ✅ Implemented Requirements
 
@@ -331,7 +251,7 @@ insurance-api/
 
 ### 🚀 Performance Optimizations
 
-1. **Database Indexes**: On clientId, endDate, and lastModifiedDate
+1. **Database Indexes**: On ids of contract and clients
 2. **Aggregation Query**: Single query for total cost calculation
 3. **Transactional Boundaries**: Proper transaction management
 4. **Query Optimization**: Filtered queries at database level
@@ -347,29 +267,43 @@ insurance-api/
 
 ## 📝 Notes
 
-- Database persists in `./data/insurance.mv.db`
+- H2 Database persists in `./data/insurance.mv.db`
+- postgres DB data persists in a docker volume
 - All dates use ISO 8601 format
 - Active contracts: `endDate == null OR endDate > currentDate`
 - lastModifiedDate is internal and not exposed in API responses
-- Phone validation accepts international formats with optional country code
 - Company identifier format: 3 uppercase letters, hyphen, 3 digits (e.g., ABC-123)
 
 ---
 
-## 👨‍💻 Development
+## 🔧 Development
 
-### Building for Production
+### Generate a package locally
 ```bash
 mvn clean package
 java -jar target/insurance-api-1.0.0.jar
 ```
 
-### Running Tests
+### CI/CD
+The github repository is configured to check the following requirements on every commit
+- Unit tests passed 
+- coverage 70%
+- code formatting 
+
+A merge in the main branch automatically triggers a release.
+
+### Running Tests and coverage
 ```bash
-mvn test
+mvn verify
+open target/site/jacoco/index.html
 ```
 
 ---
+
+## 💡 Enhancements
+
+All enhancement ideas are listed in the issue tab of the repository
+
 
 ## 📄 License
 

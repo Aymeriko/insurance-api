@@ -1,5 +1,6 @@
 package ch.insurance.api.service;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -28,6 +29,44 @@ import ch.insurance.api.repository.ClientRepository;
 import ch.insurance.api.repository.ContractRepository;
 
 class ContractServiceTest {
+
+  @Test
+  void deleteContract_WhenContractExists_ShouldUpdateAndSaveContract() {
+    // Given
+    Long contractId = 1L;
+    Client client = TestUtils.createTestSavedPerson();
+    Contract contract = TestUtils.createTestContract(client);
+    contract.setId(contractId);
+    LocalDate today = LocalDate.now();
+
+    when(contractRepository.findById(contractId)).thenReturn(Optional.of(contract));
+    when(contractRepository.save(any(Contract.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    // When
+    contractService.deleteContract(contractId);
+
+    // Then
+    verify(contractRepository).findById(contractId);
+    verify(contractRepository).save(any(Contract.class));
+    assertThat(contract.getEndDate()).isEqualTo(today);
+    assertThat(contract.getLastModifiedDate()).isNotNull();
+  }
+
+  @Test
+  void deleteContract_WhenContractDoesNotExist_ShouldThrowResourceNotFoundException() {
+    // Given
+    Long nonExistentId = 999L;
+    when(contractRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+    // When & Then
+    assertThatThrownBy(() -> contractService.deleteContract(nonExistentId))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage("Contract not found with id: " + nonExistentId);
+
+    verify(contractRepository).findById(nonExistentId);
+    verify(contractRepository, never()).save(any(Contract.class));
+  }
 
   @Mock private ContractRepository contractRepository;
 

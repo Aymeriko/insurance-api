@@ -1,6 +1,5 @@
 package ch.insurance.api.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Email;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import ch.insurance.api.domain.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +18,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClientUpdateRequest {
 
-  private Client.ClientType clientType;
-
   @Email(message = "Email must be valid")
   private String email;
 
@@ -32,11 +28,8 @@ public class ClientUpdateRequest {
   private String firstName;
   private String lastName;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Zurich")
-  private LocalDate birthDate;
-
   // For Company
-  private String companyIdentifier;
+  private String companyName;
 
   @JsonFormat(
       shape = JsonFormat.Shape.STRING,
