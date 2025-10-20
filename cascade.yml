@@ -1,0 +1,43 @@
+version: 1
+ai_agent:
+  name: "Insurance API Assistant"
+  description: "AI assistant for the Insurance API project"
+  language: "en"
+  context:
+    project_type: "java-spring-boot"
+    java_version: "21"
+    spring_boot_version: "3.x"
+    build_tool: "maven"
+  coding_style:
+    indent_size: 2
+    max_line_length: 100
+    quote_style: "double"
+    import_order: ["java", "javax", "jakarta", "org", "com", "ch.insurance"]
+  testing:
+    framework: "junit-jupiter"
+    test_naming: "methodName_shouldExpectedBehavior_whenStateUnderTest"
+    coverage_threshold: 80
+  documentation:
+    style: "asciidoc"
+    include_diagrams: true
+  security:
+    sensitive_data: ["password", "api_key", "secret"]
+  features:
+    auto_format: true
+    suggest_improvements: true
+    explain_code: true
+  rules:
+    - name: "enforce-immutable"
+      description: "Prefer immutable objects where possible"
+      severity: "warning"
+    - name: "use-lombok"
+      description: "Use Lombok annotations to reduce boilerplate"
+      severity: "info"
+  ignore_paths:
+    - "**/target/**"
+    - "**/.mvn/**"
+    - "**/mvnw*"
+    - "**/.idea/**"
+    - "**/*.iml"
+    - "**/node_modules/**"
+    - "**/.git/**"

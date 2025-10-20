@@ -50,7 +50,7 @@ This API follows a **layered architecture** with clear separation of concerns:
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/Aymeriko/insurance-api.git
 cd insurance-api
 ```
 
