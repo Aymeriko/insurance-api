@@ -52,6 +52,7 @@ public class ContractController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("/clients/{clientId}/contracts")
   @Operation(
       summary = "Update contract cost",
       description = "Updates the cost of an existing contract")
@@ -146,4 +147,5 @@ public class ContractController {
     TotalCostResponse response = contractService.getTotalCost(clientId);
     return ResponseEntity.ok(response);
   }
+
 }
