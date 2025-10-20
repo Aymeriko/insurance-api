@@ -123,7 +123,6 @@ public class ContractService {
         .build();
   }
 
-  @Transactional(readOnly = true)
   public void deleteContract(Long contractId) {
     Contract contract =
         contractRepository
@@ -131,8 +130,8 @@ public class ContractService {
             .orElseThrow(
                 () -> new ResourceNotFoundException("Contract not found with id: " + contractId));
 
-    contract.setEndDate(LocalDate.now());
-    contract.setLastModifiedDate(LocalDateTime.now());
+    LocalDate now = LocalDate.now();
+    contract.setEndDate(now);
     contractRepository.save(contract);
   }
 }
