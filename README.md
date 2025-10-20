@@ -3,14 +3,15 @@
 A RESTful API for managing insurance clients and contracts, built with Spring Boot and Java 21.
 
 ## 📋 Table of Contents
-- [Architecture Overview](#architecture-overview)
-- [Quick Start](#quick-start)
-- [API Documentation](#api-documentation)
-- [Testing the API](#testing-the-api)
-- [Technical Stack](#technical-stack)
-- [Key Features](#key-features)
-- [Notes](#notes)
-- [Development](#development)
+- [🏗️ Architecture Overview](#-architecture-overview)
+- [🚀 Quick Start](#-quick-start)
+- [📚 API Documentation](#-api-documentation)
+- [🧪 Testing the API](#-testing-the-api)
+- [🛠️ Technical Stack](#-technical-stack)
+- [✨ Key Features](#-key-features)
+- [📝 Notes](#-notes)
+- [🔧 Development](#-development)
+- [📄 License](#-license)
 
 ---
 
@@ -30,6 +31,7 @@ This API follows a **layered architecture** with clear separation of concerns:
 
 **Key Decisions**:
 - H2 file-based database for persistence across restarts
+- postgres SQL DB for the dockerized application (not synchronized with H2)
 - Soft-delete pattern preserves audit trail
 - ISO 8601 date formatting throughout
 - Indexed queries for performance
@@ -64,25 +66,34 @@ mvn spring-boot:run
 
 3.2 **Run the application with docker**
 ```bash
-docker build -t insurance-api .
-docker run -d -p 8080:8080 --name la-vaudoise-insurance-api insurance-api
+docker-compose up -d --build
+docker-compose down
 ```
+
+To see running containers and logs:
+```bash
+docker-compose ps
+docker-compose logs insurance-api
+docker-compose logs postgres
+```
+
 
 The API will start on `http://localhost:8080`
 
 
-To see running containers and logs:
-```bash
-docker ps
-docker logs <container_id>
-```
-
-
 ### Database Console
+
+If you do not use docker :
 Access H2 console at: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:file:./data/insurance`
 - Username: `sa`
 - Password: *(leave empty)*
+
+If you use docker : 
+Access postgres using the CLI or a UI tool, for example pgAdmin : 
+![img.png](docs/assets/img.png)
+
+password : insurance123
 
 ---
 
@@ -209,7 +220,7 @@ Response: `400 Bad Request` - Must be positive
 - **Spring Boot 3.2.0** - Application framework
 - **Spring Data JPA** - Data persistence
 - **Hibernate** - ORM
-- **H2 Database** - Embedded database with file persistence
+- **H2 Database (Embedded database with file persistence) or postgres database** - depends how you host the app 
 - **Lombok** - Reduces boilerplate code
 - **Jakarta Bean Validation** - Input validation
 - **Maven** - Build tool
@@ -253,7 +264,8 @@ Response: `400 Bad Request` - Must be positive
 
 ## 📝 Notes
 
-- Database persists in `./data/insurance.mv.db`
+- H2 Database persists in `./data/insurance.mv.db`
+- postgres DB data persists in a docker volume
 - All dates use ISO 8601 format
 - Active contracts: `endDate == null OR endDate > currentDate`
 - lastModifiedDate is internal and not exposed in API responses

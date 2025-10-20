@@ -12,6 +12,10 @@ spring:
     console:
       enabled: true
       path: /h2-console
+      settings:
+        web-allow-others: true
+        trace: false
+        web-admin-password: admin
 
   jpa:
     hibernate:
