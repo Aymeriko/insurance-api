@@ -15,7 +15,6 @@ spring:
       settings:
         web-allow-others: true
         trace: false
-        web-admin-password: admin
 
   jpa:
     hibernate:
